@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# ls config
+if [ -x /usr/bin/dircolors ]; then
+  test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+  alias ls='ls --color=auto --group-directories-first'
+  alias grep='grep --color=auto'
+else
+  alias ls='ls --group-directories-first'
+fi
+
+alias ll='ls -alF'
+alias la='ls -AF'
+
+# Simple aliases
+alias cls='clear'
+alias cd..='cd ..'
+
+# WSL aliases
+if [ -e /proc/sys/fs/binfmt_misc/WSLInterop ]; then
+  alias e='explorer.exe .'
+fi

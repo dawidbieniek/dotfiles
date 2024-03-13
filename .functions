@@ -1,0 +1,24 @@
+#!/bin/bash
+
+####
+# git commands
+####
+if git --version 2>&1 >/dev/null; then
+  function gic()
+  {
+    git add .
+    git commit -m "$1"
+  }
+
+  function gat()
+  {
+    git checkout --theirs "$1"
+    git add "$1"
+  }
+
+  function gao()
+  {
+    git checkout --ours "$1"
+    git add "$1"
+  }
+fi
