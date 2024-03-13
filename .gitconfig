@@ -26,20 +26,22 @@
 [alias]
   a = add --all
   c = commit -m
-  am = commit --amend --no-edit
+  am = commit --amend --no-edit --all
+####
+  o = checkout
+  ob = checkout -b
 ####
   b = branch
   ba = branch -a
   bd = branch -d
   bdf = branch -df
-####
-  d = diff
-  df = diff --name-only
+###
+  ms = merge --squash
 ####
   f = fetch
 ####
-  o = checkout
-  ob = checkout -b
+  d = diff
+  df = diff --name-only
 ####
   r = reset
   rh = reset --hard
