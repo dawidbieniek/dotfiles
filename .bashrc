@@ -6,12 +6,14 @@ esac
 
 # Append to the history file, don't overwrite it
 shopt -s histappend
-
 # Set colors for ls
+
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-    alias ls='ls --color=auto'
+    alias ls='ls --color=auto --group-directories-first'
     alias grep='grep --color=auto'
+else
+    alias ls='ls --group-directories-first'
 fi
 
 # Set colors of prompt

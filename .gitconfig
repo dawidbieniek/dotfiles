@@ -1,46 +1,53 @@
 [user]
-	name = Dawid Bieniek
-    email = dawid_b01@wp.pl
-	username = dawidbieniek
+  name = Dawid Bieniek
+  email = dawid_b01@wp.pl
+  username = dawidbieniek
 [fetch]
-    prune = true
+  prune = true
 [core]
-    editor = 'C:Program Files/Notepad++/notepad++.exe' -multiInst -notabbar -nosession -noPlugin	
+  editor = nano
 [color]
-	ui = auto
+  ui = auto
 [color "branch"]
-	current = yellow bold
-	local = green bold
-	remote = cyan bold
+  current = yellow bold
+  local = green bold
+  remote = cyan bold
 [color "diff"]
-	meta = yellow bold
-	frag = magenta bold
-	old = red bold
-	new = green bold
-	whitespace = red reverse
+  meta = yellow bold
+  frag = magenta bold
+  old = red bold
+  new = green bold
+  whitespace = red reverse
 [color "status"]
-	added = green bold
-	changed = yellow bold
-	untracked = red bold
+  added = green bold
+  changed = yellow bold
+  untracked = red bold
 ##########
 [alias]
-	a = add --all
-	b = branch
-	ba = branch -a
-	bd = branch -d
-	bdf = branch -df
-	c = commit -m
-	d = diff
-	df = diff --name-only
-	f = fetch
-	o = checkout
-	ob = checkout -b
-	r = reset
-	rh = reset --hard
-	s = status
-	st = stash
-	stc = stash clear
-	stp = stash pop
-##########
-    lp = log --pretty=one
-    am = commit --amend --no-edit
+  a = add --all
+  c = commit -m
+  am = commit --amend --no-edit
+####
+  b = branch
+  ba = branch -a
+  bd = branch -d
+  bdf = branch -df
+####
+  d = diff
+  df = diff --name-only
+####
+  f = fetch
+####
+  o = checkout
+  ob = checkout -b
+####
+  r = reset
+  rh = reset --hard
+####
+  s = status
+####
+  st = stash
+  stc = stash clear
+  stp = stash pop
+####
+  lp = log --pretty=one
