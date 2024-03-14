@@ -75,7 +75,7 @@ set_prompts() {
         ## see other Chromium repo hacking optimizations: https://github.com/paulirish/dotfiles/blob/master/setup-a-new-machine.sh#L214
         repoUrl=$(git config --get remote.origin.url)
         if grep -q chromium.googlesource.com <<<$repoUrl; then
-            dirty=" *"
+            dirty=" (*)"
         else
 
             # check if it's dirty (slow)
