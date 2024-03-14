@@ -1,13 +1,19 @@
+[init]
+  defaultBranch = main
 [user]
   name = Dawid Bieniek
   email = dawid_b01@wp.pl
   username = dawidbieniek
-[fetch]
-  prune = true
 [core]
   editor = nano
+[help]
+  autocorrect = 30
 [color]
   ui = auto
+[fetch]
+  prune = true
+[pull]
+  rebase = true
 [color "branch"]
   current = yellow bold
   local = green bold
