@@ -51,7 +51,7 @@ set_prompts() {
         userhost+="\[${green}\]$HOSTNAME"
         userhost+="\[${white}\]:"
 
-        if [ $USER != "$default_username" ]; then echo $userhost; fi
+        if [ -n "$SSH_CONNECTION" ] || [ $USER != "$default_username" ]; then echo $userhost; fi
     }
 
     function prompt_git() {
