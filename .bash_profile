@@ -19,7 +19,7 @@ shopt -s nocaseglob;
 ## Correct spelling errors in arguments supplied to cd
 shopt -s cdspell;
 ## Autocorrect on directory names to match a glob.
-shopt -s dirspell 2> /dev/null
+#shopt -s dirspell 2> /dev/null
 ## Turn on recursive globbing (enables ** to recurse all directories)
 shopt -s globstar 2> /dev/null
 
