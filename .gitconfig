@@ -6,6 +6,7 @@
   username = dawidbieniek
 [core]
   editor = nano
+  autoclrf = true
 [help]
   autocorrect = 30
 [color]
@@ -15,8 +16,8 @@
 [pull]
   rebase = true
 [color "branch"]
-  current = yellow bold
-  local = green bold
+  current = green bold
+  local = yellow bold
   remote = cyan bold
 [color "diff"]
   meta = yellow bold
@@ -32,7 +33,7 @@
 [alias]
   a = add --all
   c = commit -m
-  am = commit --amend --no-edit --all
+  amen = commit --amend --no-edit --all
 ####
   o = checkout
   ob = checkout -b

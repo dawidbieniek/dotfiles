@@ -69,3 +69,6 @@ alias cd..='cd ..'
 if [ -e /proc/sys/fs/binfmt_misc/WSLInterop ]; then
 	alias e='explorer.exe .'
 fi
+
+### TMP ###
+export PATH="$HOME/.local/bin:$PATH"
