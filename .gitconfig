@@ -55,7 +55,7 @@
 ####
   s = status
 ####
-  st = stash
+  st = stash --include-untracked
   stc = stash clear
   stp = stash pop
 ####
