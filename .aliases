@@ -15,6 +15,7 @@ alias la='ls -AF'
 # Simple aliases
 alias cls='clear'
 alias cd..='cd ..'
+alias services='service --status-all'
 
 # WSL aliases
 if [ -e /proc/sys/fs/binfmt_misc/WSLInterop ]; then
