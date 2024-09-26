@@ -4,10 +4,13 @@
 shopt -s dotglob
 
 # Define the source directory (where your .dotfiles are)
-DOTFILES_DIR="$HOME/.dotfiles"
+DOTFILES_DIR=$(realpath "$(dirname "$0")")
 
 # Define the target directory (your home directory)
 TARGET_DIR="$HOME"
+
+# Array of files and directories to be skipped
+SKIP_ITEMS=( ".git" ".gitignore" "README.md" )
 
 # Function to display help text
 display_help() {
@@ -40,8 +43,9 @@ create_links() {
                 continue
             fi
 
-            # Skip the .git directory and .gitignore file
-            if [ "$(basename "$item")" == ".git" ] || [ "$(basename "$item")" == ".gitignore" ]; then
+            # Skip items in the SKIP_ITEMS array
+            local base_name=$(basename "$item")
+            if [[ " ${SKIP_ITEMS[@]} " =~ " $base_name " ]]; then
                 continue
             fi
 
