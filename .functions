@@ -1,8 +1,6 @@
 #!/bin/bash
 
-####
 # git commands
-####
 if git --version 2>&1 >/dev/null; then
   function gic()
   {

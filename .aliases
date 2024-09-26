@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# ls config
+# use colors if available
 if [ -x /usr/bin/dircolors ]; then
   test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
   alias ls='ls --color=auto --group-directories-first'
@@ -9,10 +9,11 @@ else
   alias ls='ls --group-directories-first'
 fi
 
+# ls
 alias ll='ls -alF'
 alias la='ls -AF'
 
-# Simple aliases
+# basic aliases
 alias cls='clear'
 alias cd..='cd ..'
 alias services='service --status-all'

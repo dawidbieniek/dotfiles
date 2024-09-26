@@ -11,7 +11,6 @@ When new files are added, the script should be rerun to create new links
 - `.bash_logout` actions to be performed on logout
 - `.bash_profile` loads all bash setup files and does basic bash configuration
 - `.bash_prompt` prompt configuration (colors, git dirtiness)
-- `.bashrc` old configuration **probably should be deleted**
 - `.functions` shell functions
 - `.gitconfig` git confgituraion
 - `.hushlogin` empty file, hides login message
