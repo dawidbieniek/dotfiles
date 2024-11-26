@@ -9,15 +9,11 @@ fi;
 
 # Prompt functions
 set_prompts() {
-    local black="" blue="" bold="" cyan="" green="" orange="" \
-          purple="" red="" reset="" white="" yellow=""
-
-    local dateCmd=""
+    black="" blue="" bold="" cyan="" green="" orange="" purple="" red="" reset="" white="" yellow=""
 
     if [ -x /usr/bin/tput ] && tput setaf 1 &> /dev/null; then
         tput sgr0 # Reset colors
 
-        bold=$(tput bold)
         reset=$(tput sgr0)
 
         # Color config for 255 color display
@@ -38,63 +34,99 @@ set_prompts() {
     function usernamehost() {
         # Highlight the user name when logged in as root.
         if [[ "${USER}" == *"root" ]]; then
-            userStyle="${red}";
+            local userStyle="${red}";
         else
-            userStyle="${cyan}";
+            local userStyle="${cyan}";
         fi;
 
-        userhost=""
+        local userhost=""
         userhost+="\[${userStyle}\]$USER"
         userhost+="\[${white}\]@"
         userhost+="\[${green}\]$HOSTNAME"
         userhost+="\[${white}\]:"
 
-        if [ -n "$SSH_CONNECTION" ] || [ $USER != "$default_username" ]; then echo $userhost; fi
+        if [ -n "$SSH_CONNECTION" ] || [ "$USER" != "$default_username" ]; then echo "$userhost"; fi
     }
+	
+	function git_status() {
+		# From: https://askubuntu.com/questions/851186/how-to-add-colored-git-branch-to-my-bash-prompt#answer-851407
+		# Outputs a series of indicators based on the status of the
+		# working directory:
+		# + changes are staged and ready to commit
+		# ! unstaged changes are present
+		# ? untracked files are present
+		# S changes have been stashed
+		# < there are remote changes that are not pulled
+		# > there are local changes that are not pushed
+		local status="$(git status -sb 2>/dev/null)"
+		
+		local output=''
+		[[ -n $(egrep '^[MADRC]' <<<"$status") ]] && output="$output+"
+		[[ -n $(egrep '^.[MD]' <<<"$status") ]] && output="$output!"
+		[[ -n $(egrep '^\?\?' <<<"$status") ]] && output="$output?"
+		[[ -n $(git stash list) ]] && output="${output}S"
+		[[ -n $(grep '\[behind' <<<"$status") ]] && output="${output}<"
+		[[ -n $(grep '\[ahead' <<<"$status") ]] && output="${output}>"
+		[[ -n $output ]] && output="|$output|"  # surround with '|'
+		echo $output
+	}
+	
+	function git_commit_difference() {
+		local localBranch=$1
+		local remoteBranch=$2
+		
+		if [ -z "$remoteBranch" ]; then
+			echo ""
+			return
+		fi
+
+		local commitDiff=$(git rev-list --left-right --count $localBranch...$remoteBranch)
+		local localAhead=$(echo "$commitDiff" | cut -f1)
+		local localBehind=$(echo "$commitDiff" | cut -f2)
+				
+		# Format the output
+		if [ $localAhead -gt 0 ]; then
+			local aheadPrompt="${green}+$localAhead"
+		else
+			local aheadPrompt="${white}$localAhead"
+		fi
+		
+		if [ $localBehind -gt 0 ]; then
+			local behindPrompt="${red}-$localBehind"
+		else
+			local behindPrompt="${white}$localBehind"
+		fi
+
+		echo "${white}($aheadPrompt $behindPrompt${white})"
+	}
 
     function prompt_git() {
-        # this is >5x faster than mathias's.
-
-        # check if we're in a git repo. (fast)
-        git rev-parse --is-inside-work-tree &>/dev/null || return
-
-        # check for what branch we're on. (fast)
-        #   if… HEAD isn’t a symbolic ref (typical branch),
-        #   then… get a tracking remote branch or tag
-        #   otherwise… get the short SHA for the latest commit
-        #   lastly just give up.
-        branchName="$(git symbolic-ref --quiet --short HEAD 2> /dev/null || \
+		# Return if not in git repo
+		git rev-parse --is-inside-work-tree > /dev/null 2>&1 ||  return
+	
+        local branchName="$(git symbolic-ref --quiet --short HEAD 2> /dev/null || \
             git describe --all --exact-match HEAD 2> /dev/null || \
             git rev-parse --short HEAD 2> /dev/null || \
             echo '(unknown)')";
-
-
-        ## early exit for Chromium & Blink repo, as the dirty check takes ~5s
-        ## see other Chromium repo hacking optimizations: https://github.com/paulirish/dotfiles/blob/master/setup-a-new-machine.sh#L214
-        repoUrl=$(git config --get remote.origin.url)
-        if grep -q chromium.googlesource.com <<<$repoUrl; then
-            dirty=" (*)"
-        else
-            # check if it's dirty (slow)
-            #   technique via github.com/git/git/blob/355d4e173/contrib/completion/git-prompt.sh#L472-L475
-            dirty=$(git diff --no-ext-diff --quiet --ignore-submodules --exit-code || echo -e "*")
-
-            # mathias has a few more checks some may like:
-            #    github.com/mathiasbynens/dotfiles/blob/a8bd0d4300/.bash_prompt#L30-L43
-        fi
-
-        [ -n "${s}" ] && s=" [${s}]";
-        echo -e "${1}${branchName}${2}$dirty";
-
-        return
+		
+		local remoteTrackingBranch=$(git rev-parse --abbrev-ref @{u} 2>/dev/null || echo "")
+		
+		local difference=$(git_commit_difference $branchName $remoteTrackingBranch)
+		local status=$(git_status)
+		
+        [ -n "${s}" ] && s=" [${s}]";		
+        git_prompt=""
+        git_prompt+=" ${white} ~ ${violet}$branchName"
+        git_prompt+="${blue}$status"
+        git_prompt+=" $difference"
+        echo $git_prompt
     }
 
     ### Prompt string ###
     PS1=""                                 # terminal title (set to the current working directory)
-    PS1+="\[$bold\]"
     PS1+="$(usernamehost)"                              # username at host
     PS1+="\[$orange\]\w"                                     # working directory
-    PS1+="\$(prompt_git \"\[$white\] ~ \[$violet\]\" \"\[$purple\]\")"   # git repository details
+    PS1+="\$(prompt_git)"   # git repository details
     PS1+="\n"
     PS1+="\[$reset$cyan\]\\$ \[$reset\]"
 
