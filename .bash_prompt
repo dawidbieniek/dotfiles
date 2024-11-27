@@ -102,7 +102,15 @@ set_prompts() {
 
     function prompt_git() {
 		# Return if not in git repo
-		git rev-parse --is-inside-work-tree > /dev/null 2>&1 ||  return
+		if [ $(git rev-parse --is-inside-work-tree) = "false" ]; then 
+			if [ $(git rev-parse --is-inside-git-dir) = "false" ]; then
+				return
+			# If inside .git directory -> print info
+			else
+				echo " ${red}(.git dir)"
+				return
+			fi
+		fi
 	
         local branchName="$(git symbolic-ref --quiet --short HEAD 2> /dev/null || \
             git describe --all --exact-match HEAD 2> /dev/null || \
