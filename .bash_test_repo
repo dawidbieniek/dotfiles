@@ -15,10 +15,18 @@ function check_repos() {
 		
 		# Compare remote HEAD hash with local HEAD hash
 		if [ $(git -C "$repoPath" rev-parse HEAD) != $(git -C "$repoPath" ls-remote origin HEAD | awk '{print $1}') ]; then 
-			echo "Repository '$1' needs to be fetched"
+			red="" reset=""
+
+			if [ -x /usr/bin/tput ] && tput setaf 1 &> /dev/null; then
+				tput sgr0 # Reset colors
+				red=$(tput setaf 160)
+				reset=$(tput sgr0)
+			fi
+
+			echo "${red}Repository '$1' needs to be fetched${reset}"
 		else
 			echo "Repository '$1' up to date"
-		fi;
+		fi
 	}
 
 	local dotfilesRepoPath="/home/dawid/.dotfiles"
