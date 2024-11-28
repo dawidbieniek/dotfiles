@@ -9,7 +9,7 @@ function check_repos() {
 	function check_repo() {
 		local repoPath=$1
 		
-		if [ ! -d $dotfilesRepoPath ]; then
+		if [ ! -d $repoPath ]; then
 			return
 		fi
 		
