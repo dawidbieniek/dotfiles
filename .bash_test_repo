@@ -1,0 +1,31 @@
+function check_repos() {
+	# Checks whether there is internet connection with timeout of 1s	
+	timeout 1 bash -c '{ echo -e "GET http://google.com HTTP/1.0\n\n" | nc -w1 google.com 80 > /dev/null 2>&1; }'
+	if [ $? -ne 0 ]; then 
+		echo "Offline"
+		return
+	fi
+
+	function check_repo() {
+		local repoPath=$1
+		
+		if [ ! -d $dotfilesRepoPath ]; then
+			return
+		fi
+		
+		# Compare remote HEAD hash with local HEAD hash
+		if [ $(git -C "$repoPath" rev-parse HEAD) != $(git -C "$repoPath" ls-remote origin HEAD | awk '{print $1}') ]; then 
+			echo "Repository '$1' needs to be fetched"
+		else
+			echo "Repository '$1' up to date"
+		fi;
+	}
+
+	local dotfilesRepoPath="/home/dawid/.dotfiles"
+	local scriptsRepoPath="/home/dawid/scripts"
+
+	check_repo "$dotfilesRepoPath"
+	check_repo "$scriptsRepoPath"
+}
+
+check_repos
