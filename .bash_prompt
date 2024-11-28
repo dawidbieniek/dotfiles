@@ -102,8 +102,8 @@ set_prompts() {
 
     function prompt_git() {
 		# Return if not in git repo
-		if [ $(git rev-parse --is-inside-work-tree) = "false" ]; then 
-			if [ $(git rev-parse --is-inside-git-dir) = "false" ]; then
+		if [ "$(git rev-parse --is-inside-work-tree 2> /dev/null)" != "true" ]; then
+			if [ "$(git rev-parse --is-inside-git-dir 2> /dev/null)" != "true" ]; then
 				return
 			# If inside .git directory -> print info
 			else
