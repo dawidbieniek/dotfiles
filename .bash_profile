@@ -1,5 +1,5 @@
 # Load all other setup files
-for file in ~/.{bash_prompt,aliases,exports,functions}; do
+for file in ~/.{bash_prompt,aliases,exports,functions,bash_test_repo}; do
   [ -r "$file" ] && source "$file"
 done
 unset file
@@ -33,5 +33,3 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
-
-source ".bash_test_repo"
