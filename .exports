@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# Color variables
+if [ -x /usr/bin/tput ] && tput setaf 1 &> /dev/null; then
+    tput sgr0 # Reset colors
+
+    reset=$(tput sgr0)
+
+    # Color config for 255 color display
+    black=$(tput setaf 0)
+    blue=$(tput setaf 27)
+    cyan=$(tput setaf 51)
+    green=$(tput setaf 46)
+    orange=$(tput setaf 208)
+    purple=$(tput setaf 141)
+    red=$(tput setaf 160)
+    violet=$(tput setaf 99)
+    magenta=$(tput setaf 129)
+    white=$(tput setaf 15)
+    yellow=$(tput setaf 226)
+
+    # Export the color variables
+    export black blue cyan green orange purple red violet magenta white yellow reset
+fi

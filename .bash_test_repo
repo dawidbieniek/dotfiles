@@ -1,8 +1,10 @@
+#!/bin/bash
+
 function check_repos() {
 	# Checks whether there is internet connection with timeout of 1s	
 	timeout 1 bash -c '{ echo -e "GET http://google.com HTTP/1.0\n\n" | nc -w1 google.com 80 > /dev/null 2>&1; }'
 	if [ $? -ne 0 ]; then 
-		echo "Offline"
+		echo "${reset}Login: {yellow}Offline"
 		return
 	fi
 
@@ -14,18 +16,10 @@ function check_repos() {
 		fi
 		
 		# Compare remote HEAD hash with local HEAD hash
-		if [ $(git -C "$repoPath" rev-parse HEAD) != $(git -C "$repoPath" ls-remote origin HEAD | awk '{print $1}') ]; then 
-			red="" reset=""
-
-			if [ -x /usr/bin/tput ] && tput setaf 1 &> /dev/null; then
-				tput sgr0 # Reset colors
-				red=$(tput setaf 160)
-				reset=$(tput sgr0)
-			fi
-
-			echo "${red}Repository '$1' needs to be fetched${reset}"
+		if [ $(git -C "$repoPath" rev-parse HEAD) != $(git -C "$repoPath" ls-remote origin HEAD | awk '{print $1}') ]; then
+			echo "${reset}Login: ${red}Repository '$1' needs to be fetched${reset}"
 		else
-			echo "Repository '$1' up to date"
+			echo "${reset}Login: ${green}Repository '$1' up to date"
 		fi
 	}
 
@@ -34,6 +28,11 @@ function check_repos() {
 
 	check_repo "$dotfilesRepoPath"
 	check_repo "$scriptsRepoPath"
+	
+	unset check_repo
 }
 
+# Call the function
 check_repos
+
+unset check_repos

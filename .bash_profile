@@ -1,5 +1,5 @@
 # Load all other setup files
-for file in ~/.{bash_prompt,aliases,exports,functions,bash_test_repo}; do
+for file in ~/.{exports,bash_prompt,aliases,functions,bash_test_repo}; do
   [ -r "$file" ] && source "$file"
 done
 unset file
