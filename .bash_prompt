@@ -102,13 +102,25 @@ set_prompts() {
 		
 		local difference=$(git_commit_difference $branchName $remoteTrackingBranch)
 		local status=$(git_status)
-		
+
+		unset submoduleName
+		if [ ! -z $(git rev-parse --show-superproject-working-tree) ]; then
+			local toplevelName=`git rev-parse --show-toplevel`
+			local rootToplevelName=`git -C $toplevelName/.. rev-parse --show-toplevel`
+			submoduleName=${toplevelName#$rootToplevelName}
+			submoduleName=${submoduleName#/}
+		fi
+
         [ -n "${s}" ] && s=" [${s}]";		
         git_prompt=""
-        git_prompt+=" ${white} ~ ${violet}$branchName"
+        git_prompt+=" ${white} ~"
+		[ ! -z $submoduleName ] && git_prompt+=" ${blue}($submoduleName)"
+		git_prompt+=" ${violet}$branchName"
         git_prompt+="${blue}$status"
         git_prompt+=" $difference"
         echo $git_prompt
+
+		unset submoduleName
     }
 
     ### Prompt string ###
