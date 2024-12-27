@@ -21,4 +21,5 @@ alias services='service --status-all'
 # WSL aliases
 if [ -e /proc/sys/fs/binfmt_misc/WSLInterop ]; then
   alias e='explorer.exe .'
+  alias dotnet='/mnt/c/Program\ Files/dotnet/dotnet.exe'
 fi
