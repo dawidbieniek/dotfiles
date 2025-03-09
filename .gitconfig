@@ -8,13 +8,44 @@
   editor = nano
   autoclrf = true
 [help]
-  autocorrect = 30
+  # prompt autocorrected command when invalid is passed
+  autocorrect = prompt
+[fetch]
+  # remove local branches if remote has been deleted
+  prune = true
+  pruneTags = true
+  # fetch all branches
+  all = true
+[pull]
+  # rebase instead of merging
+  rebase = true
+[push]
+  # setup upstream branch to remote
+  autoSetupRemote = true
+  # create tags on remote from local
+  followTags = true
+[merge]
+  # also show old code in merge conflicts
+  conflictStyle = zdiff3
+[branch]
+  # sort branches by commit date
+  sort = conmitterdate
+[column]
+  ui = auto
+[tag]
+  # sort tags by their version
+  sort = version:refname
+[diff]
+  # use newer diff algorithm
+  algorithm = histogram
+  # show moved code as moved instead of deleted and created
+  colorMoved = plain
+  # change file prefixes from a/ & b/ to i/ (index) w/ (working dir) c/ (commit)
+  mnemonicPrefix = true
+  # detect file renames
+  renames = true
 [color]
   ui = auto
-[fetch]
-  prune = true
-[pull]
-  rebase = true
 [color "branch"]
   current = green bold
   local = yellow bold
@@ -52,6 +83,7 @@
 ####
   r = reset
   rh = reset --hard
+  rs = reset --soft
 ####
   s = status
 ####
