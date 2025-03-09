@@ -25,7 +25,7 @@
   # create tags on remote from local
   followTags = true
 [merge]
-  # also show old code in merge conflicts
+  # also show old code in merge conflicts (requires v2.35.0+)
   conflictStyle = zdiff3
 [branch]
   # sort branches by commit date
