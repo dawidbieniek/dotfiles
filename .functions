@@ -19,14 +19,30 @@ if git --version 2>&1 >/dev/null; then
     git checkout --ours "$1"
     git add "$1"
   }
-  
+
   function gclone()
   {
     if [ $# -ne 1 ]; then
-        echo "Exactly one argument required" >&2
-        return 1
+      echo "Usagge: gclone <repo-name>" >&2
+      return 1
     fi
-	
+
+    local repoName="$1"
+
+    # Check if repo exists
+    if ! git ls-remote --exit-code "git@github.com:dawidbieniek/$repoName" >/dev/null 2>&1; then
+      echo "Repository dawidbieniek/$repoName does not exist or is inaccessible" >&2
+      return 1
+    fi
+
     git clone "git@github.com:dawidbieniek/$1"
+    local result=$?
+
+    if [ $result -ne 0 ]; then
+      echo "Failed to clone repository" >&2
+      return $result
+    fi
+
+    echo "Successfully cloned repository $repoName"
   }
 fi
