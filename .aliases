@@ -9,7 +9,7 @@ else
   alias ls='ls --group-directories-first'
 fi
 
-if type colols > /dev/null; then
+if type colorls > /dev/null; then
   alias l='colorls -sd'
   alias la='colorls -A --sd'
   alias ll='colorls -lA --sd'
