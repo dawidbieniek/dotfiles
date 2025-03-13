@@ -1,137 +1,137 @@
 #!/bin/bash
 
+if [[ -n "$ZSH_VERSION" ]]; then  # quit now if in zsh
+  return 1 2> /dev/null || exit 1;
+fi;
+
 default_username="dawid"
 
 # Automatically trim long paths in the prompt (requires Bash 4.x)
 PROMPT_DIRTRIM=2
 
-if [[ -n "$ZSH_VERSION" ]]; then  # quit now if in zsh
-    return 1 2> /dev/null || exit 1;
-fi;
-
 # Prompt functions
 set_prompts() {
-    # Only show username/host if not default
-    function usernamehost() {
-        # Highlight the user name when logged in as root.
-        if [[ "${USER}" == *"root" ]]; then
-            local userStyle="${red}";
-        else
-            local userStyle="${cyan}";
-        fi;
+  # Only show username/host if not default
+  function usernamehost() {
+    # Highlight the user name when logged in as root.
+    if [[ "${USER}" == *"root" ]]; then
+      local userStyle="${red}";
+    else
+      local userStyle="${cyan}";
+    fi;
 
-        local userhost=""
-        userhost+="\[${userStyle}\]$USER"
-        userhost+="\[${white}\]@"
-        userhost+="\[${green}\]$HOSTNAME"
-        userhost+="\[${white}\]:"
+    local userhost=""
+    userhost+="\[${userStyle}\]$USER"
+    userhost+="\[${white}\]@"
+    userhost+="\[${green}\]$HOSTNAME"
+    userhost+="\[${white}\]:"
 
-        if [ -n "$SSH_CONNECTION" ] || [ "$USER" != "$default_username" ]; then echo "$userhost"; fi
-    }
-	
-	function git_status() {
-		# From: https://askubuntu.com/questions/851186/how-to-add-colored-git-branch-to-my-bash-prompt#answer-851407
-		# Outputs a series of indicators based on the status of the
-		# working directory:
-		# + changes are staged and ready to commit
-		# ! unstaged changes are present
-		# ? untracked files are present
-		# S changes have been stashed
-		# < there are remote changes that are not pulled
-		# > there are local changes that are not pushed
-		local status="$(git status -sb 2>/dev/null)"
-		
-		local output=''
-		[[ -n $(egrep '^[MADRC]' <<<"$status") ]] && output="$output+"
-		[[ -n $(egrep '^.[MD]' <<<"$status") ]] && output="$output!"
-		[[ -n $(egrep '^\?\?' <<<"$status") ]] && output="$output?"
-		[[ -n $(git stash list) ]] && output="${output}S"
-		[[ -n $(grep '\[behind' <<<"$status") ]] && output="${output}<"
-		[[ -n $(grep '\[ahead' <<<"$status") ]] && output="${output}>"
-		[[ -n $output ]] && output="|$output|"  # surround with '|'
-		echo $output
-	}
-	
-	function git_commit_difference() {
-		local localBranch=$1
-		local remoteBranch=$2
-		
-		if [ -z "$remoteBranch" ]; then
-			echo ""
-			return
-		fi
+    if [ -n "$SSH_CONNECTION" ] || [ "$USER" != "$default_username" ]; then echo "$userhost"; fi
+  }
 
-		local commitDiff=$(git rev-list --left-right --count $localBranch...$remoteBranch)
-		local localAhead=$(echo "$commitDiff" | cut -f1)
-		local localBehind=$(echo "$commitDiff" | cut -f2)
-				
-		# Format the output
-		if [ $localAhead -gt 0 ]; then
-			local aheadPrompt="${green}+$localAhead"
-		else
-			local aheadPrompt="${white}$localAhead"
-		fi
-		
-		if [ $localBehind -gt 0 ]; then
-			local behindPrompt="${red}-$localBehind"
-		else
-			local behindPrompt="${white}$localBehind"
-		fi
+  function git_status() {
+    # From: https://askubuntu.com/questions/851186/how-to-add-colored-git-branch-to-my-bash-prompt#answer-851407
+    # Outputs a series of indicators based on the status of the
+    # working directory:
+    # + changes are staged and ready to commit
+    # ! unstaged changes are present
+    # ? untracked files are present
+    # S changes have been stashed
+    # < there are remote changes that are not pulled
+    # > there are local changes that are not pushed
+    local status="$(git status -sb 2>/dev/null)"
 
-		echo "${white}($aheadPrompt $behindPrompt${white})"
-	}
+    local output=''
+    [[ -n $(egrep '^[MADRC]' <<<"$status") ]] && output="$output+"
+    [[ -n $(egrep '^.[MD]' <<<"$status") ]] && output="$output!"
+    [[ -n $(egrep '^\?\?' <<<"$status") ]] && output="$output?"
+    [[ -n $(git stash list) ]] && output="${output}S"
+    [[ -n $(grep '\[behind' <<<"$status") ]] && output="${output}<"
+    [[ -n $(grep '\[ahead' <<<"$status") ]] && output="${output}>"
+    [[ -n $output ]] && output="|$output|"  # surround with '|'
+    echo $output
+  }
 
-    function prompt_git() {
-		# Return if not in git repo
-		if [ "$(git rev-parse --is-inside-work-tree 2> /dev/null)" != "true" ]; then
-			if [ "$(git rev-parse --is-inside-git-dir 2> /dev/null)" != "true" ]; then
-				return
-			# If inside .git directory -> print info
-			else
-				echo " ${red}(.git dir)"
-				return
-			fi
-		fi
-	
-        local branchName="$(git symbolic-ref --quiet --short HEAD 2> /dev/null || \
-            git describe --all --exact-match HEAD 2> /dev/null || \
-            git rev-parse --short HEAD 2> /dev/null || \
-            echo '(unknown)')";
-		
-		local remoteTrackingBranch=$(git rev-parse --abbrev-ref @{u} 2>/dev/null || echo "")
-		
-		local difference=$(git_commit_difference $branchName $remoteTrackingBranch)
-		local status=$(git_status)
+  function git_commit_difference() {
+    local localBranch=$1
+    local remoteBranch=$2
 
-		unset submoduleName
-		if [ ! -z $(git rev-parse --show-superproject-working-tree) ]; then
-			local toplevelName=`git rev-parse --show-toplevel`
-			local rootToplevelName=`git -C $toplevelName/.. rev-parse --show-toplevel`
-			submoduleName=${toplevelName#$rootToplevelName}
-			submoduleName=${submoduleName#/}
-		fi
+    if [ -z "$remoteBranch" ]; then
+      echo ""
+      return
+    fi
 
-        [ -n "${s}" ] && s=" [${s}]";		
-        git_prompt=""
-        git_prompt+=" ${white} ~"
-		[ ! -z $submoduleName ] && git_prompt+=" ${blue}($submoduleName)"
-		git_prompt+=" ${violet}$branchName"
-        git_prompt+="${blue}$status"
-        git_prompt+=" $difference"
-        echo $git_prompt
+    local commitDiff=$(git rev-list --left-right --count $localBranch...$remoteBranch)
+    local localAhead=$(echo "$commitDiff" | cut -f1)
+    local localBehind=$(echo "$commitDiff" | cut -f2)
 
-		unset submoduleName
-    }
+    # Format the output
+    if [ $localAhead -gt 0 ]; then
+      local aheadPrompt="${green}+$localAhead"
+    else
+      local aheadPrompt="${white}$localAhead"
+    fi
 
-    ### Prompt string ###
-    PS1=""                                 # terminal title (set to the current working directory)
-    PS1+="$(usernamehost)"                              # username at host
-    PS1+="\[$orange\]\w"                                     # working directory
-    PS1+="\$(prompt_git)"   # git repository details
-    PS1+="\n"
-    PS1+="\[$reset$cyan\]\\$ \[$reset\]"
+    if [ $localBehind -gt 0 ]; then
+      local behindPrompt="${red}-$localBehind"
+    else
+      local behindPrompt="${white}$localBehind"
+    fi
 
-    export PS1
+    echo "${white}($aheadPrompt $behindPrompt${white})"
+  }
+
+  function prompt_git() {
+    # Return if not in git repo
+    if [ "$(git rev-parse --is-inside-work-tree 2> /dev/null)" != "true" ]; then
+      if [ "$(git rev-parse --is-inside-git-dir 2> /dev/null)" != "true" ]; then
+        return
+      # If inside .git directory -> print info
+      else
+        echo " ${red}(.git dir)"
+        return
+      fi
+    fi
+
+    local branchName="$(git symbolic-ref --quiet --short HEAD 2> /dev/null || \
+    git describe --all --exact-match HEAD 2> /dev/null || \
+    git rev-parse --short HEAD 2> /dev/null || \
+    echo '(unknown)')";
+
+    local remoteTrackingBranch=$(git rev-parse --abbrev-ref @{u} 2>/dev/null || echo "")
+
+    local difference=$(git_commit_difference $branchName $remoteTrackingBranch)
+    local status=$(git_status)
+
+    unset submoduleName
+    if [ ! -z $(git rev-parse --show-superproject-working-tree) ]; then
+      local toplevelName=`git rev-parse --show-toplevel`
+      local rootToplevelName=`git -C $toplevelName/.. rev-parse --show-toplevel`
+      submoduleName=${toplevelName#$rootToplevelName}
+      submoduleName=${submoduleName#/}
+    fi
+
+    [ -n "${s}" ] && s=" [${s}]";
+    git_prompt=""
+    git_prompt+=" ${white} ~"
+    [ ! -z $submoduleName ] && git_prompt+=" ${blue}($submoduleName)"
+    git_prompt+=" ${violet}$branchName"
+    git_prompt+="${blue}$status"
+    git_prompt+=" $difference"
+    echo $git_prompt
+
+    unset submoduleName
+  }
+
+  ### Prompt string ###
+  PS1=""                   # terminal title (set to the current working directory)
+  PS1+="$(usernamehost)"   # username at host
+  PS1+="\[$orange\]\w"     # working directory
+  PS1+="\$(prompt_git)"    # git repository details
+  PS1+="\n"
+  PS1+="\[$reset$cyan\]\\$ \[$reset\]"
+
+  export PS1
 }
 
 set_prompts

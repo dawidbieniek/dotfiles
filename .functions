@@ -23,7 +23,7 @@ if git --version 2>&1 >/dev/null; then
   function gclone()
   {
     if [ $# -ne 1 ]; then
-      echo "Usagge: gclone <repo-name>" >&2
+      echo "Usage: gclone <repo-name>" >&2
       return 1
     fi
 

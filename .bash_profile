@@ -1,5 +1,5 @@
 # Load all other setup files
-for file in ~/.{exports,bash_prompt,aliases,functions,bash_test_repo}; do
+for file in ~/.{exports,bash_prompt,aliases,functions}; do
   [ -r "$file" ] && source "$file"
 done
 unset file
@@ -33,3 +33,7 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion

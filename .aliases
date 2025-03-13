@@ -9,19 +9,26 @@ else
   alias ls='ls --group-directories-first'
 fi
 
-# ls
-alias ll='ls -alF'
-alias la='ls -AF'
+if type colols > /dev/null; then
+  alias l='colorls -sd'
+  alias la='colorls -A --sd'
+  alias ll='colorls -lA --sd'
+  alias lt='colorls --tree --sf'
+else
+  alias l='ls'
+  alias la='ls -AF'
+  alias ll='ls -alF'
+fi
 
-# basic aliases
 alias cls='clear'
 alias cd..='cd ..'
 alias cd...='cd ../..'
-alias cd....='cd ../../..'
-alias services='service --status-all'
 
 # WSL aliases
 if [ -e /proc/sys/fs/binfmt_misc/WSLInterop ]; then
   alias e='explorer.exe .'
-  alias dotnet='/mnt/c/Program\ Files/dotnet/dotnet.exe'
+  if [ -d "/mnt/c/Program Files/dotnet" ]; then
+    # Alias instead of PATH to avoid having to type dotnet.exe
+    alias dotnet='/mnt/c/Program\ Files/dotnet/dotnet.exe'
+  fi
 fi

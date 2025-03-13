@@ -29,7 +29,7 @@
   conflictStyle = zdiff3
 [branch]
   # sort branches by commit date
-  sort = conmitterdate
+  sort = committerdate
 [column]
   ui = auto
 [tag]
