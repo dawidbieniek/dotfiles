@@ -10,7 +10,7 @@ else
 fi
 
 if type colorls > /dev/null; then
-  alias l='colorls -sd'
+  alias l='colorls --sd'
   alias la='colorls -A --sd'
   alias ll='colorls -lA --sd'
   alias lt='colorls --tree --sf'
