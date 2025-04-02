@@ -77,6 +77,8 @@
   ms = merge --squash
 ####
   f = fetch
+  p = push
+  pf = push --force-with-lease
 ####
   d = diff
   df = diff --name-only
